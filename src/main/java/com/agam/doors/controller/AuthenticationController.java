@@ -6,7 +6,6 @@ import com.agam.doors.model.AuthToken;
 import com.agam.doors.model.LoginUser;
 import com.agam.doors.model.User;
 import com.agam.doors.service.UserService;
-import com.agam.doors.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,7 +26,7 @@ public class AuthenticationController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/generate-token", method = RequestMethod.POST)
+    @PostMapping(value = "/generate-token")
     public ApiResponse<AuthToken> register(@RequestBody LoginUser loginUser) throws AuthenticationException {
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword()));
@@ -35,5 +34,6 @@ public class AuthenticationController {
         final String token = jwtTokenUtil.generateToken(user);
         return new ApiResponse<>(200, "success",new AuthToken(token, user.getUsername()));
     }
+
 
 }

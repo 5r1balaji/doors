@@ -3,14 +3,19 @@ spring :
     active: dev
   application:
     name: doors-api-gateway
+  #datasource:
+   # url: jdbc:mariadb://localhost:3306/doors
+   # username: root
+    #password: root
+    #driver-class-name: org.mariadb.jdbc.Driver
   datasource:
-    url: jdbc:mariadb://localhost:3306/doors
-    username: root
-    password: root
-    driver-class-name: org.mariadb.jdbc.Driver
-
+    url: jdbc:h2:mem:testdb
+    username:
+    password:
+    driver-class-name: org.h2.Driver
   jpa:
-    database-platform: org.hibernate.dialect.MariaDBDialect
+   # database-platform: org.hibernate.dialect.MariaDBDialect
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
       generate-ddl: true
@@ -18,7 +23,8 @@ spring :
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 server:
   port: 8081
-
+  servlet:
+    context-path  : /doors-api
 
 eureka:
     client:
