@@ -21,9 +21,8 @@ public class User {
     @JsonIgnore
     private String password;
     @Column
-    private long salary;
-    @Column
-    private int age;
+    private String email;
+
 
     public int getId() {
         return id;
@@ -65,19 +64,9 @@ public class User {
         this.password = password;
     }
 
-    public long getSalary() {
-        return salary;
+    public String getEmail() {
+        return email;
     }
 
-    public void setSalary(long salary) {
-        this.salary = salary;
-    }
 
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
 }
