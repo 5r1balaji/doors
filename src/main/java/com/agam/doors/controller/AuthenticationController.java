@@ -7,10 +7,14 @@ import com.agam.doors.model.LoginUser;
 import com.agam.doors.model.User;
 import com.agam.doors.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
+
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -31,8 +35,8 @@ public class AuthenticationController {
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword()));
         final User user = userService.findOne(loginUser.getUsername());
-        final String token = jwtTokenUtil.generateToken(user);
-        return new ApiResponse<>(200, "success",new AuthToken(token, user.getUsername()));
+        final AuthToken token = jwtTokenUtil.generateToken(user);
+        return new ApiResponse<>(200, "success",token);
     }
 
 
