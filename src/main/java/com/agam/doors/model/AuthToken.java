@@ -1,9 +1,20 @@
 package com.agam.doors.model;
 
-public class AuthToken {
+import java.io.Serializable;
+
+
+public class AuthToken  implements Serializable {
 
     private String token;
     private String username;
+
+    @Override
+    public String toString() {
+        return "AuthToken{" +
+                "token='" + token + '\'' +
+                ", username='" + username + '\'' +
+                '}';
+    }
 
     public AuthToken(){
 
