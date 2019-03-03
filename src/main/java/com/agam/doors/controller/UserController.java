@@ -2,7 +2,6 @@ package com.agam.doors.controller;
 
 import com.agam.doors.config.JwtTokenUtil;
 import com.agam.doors.model.ApiResponse;
-import com.agam.doors.model.User;
 import com.agam.doors.service.UserService;
 import com.agam.doors.model.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import static com.agam.doors.model.Constants.TOKEN_PREFIX;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/auth")
 public class UserController {
 
     @Autowired
@@ -27,29 +26,8 @@ public class UserController {
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/signup")
-    public ApiResponse<User> saveUser(@RequestBody UserDto user){
+    public ApiResponse<UserDto> saveUser(@RequestBody UserDto user){
         return new ApiResponse<>(HttpStatus.OK.value(), "User saved successfully.",userService.save(user));
-    }
-
-    @GetMapping
-    public ApiResponse<List<User>> listUser(@RequestHeader(value="Authorization") String token){
-        return new ApiResponse<>(HttpStatus.OK.value(), "User list fetched successfully.",userService.findAll());
-    }
-
-    @GetMapping("/{id}")
-    public ApiResponse<User> getOne(@PathVariable int id){
-        return new ApiResponse<>(HttpStatus.OK.value(), "User fetched successfully.",userService.findById(id));
-    }
-
-    @PutMapping("/{id}")
-    public ApiResponse<UserDto> update(@RequestBody UserDto userDto,@RequestHeader(value="Authorization") String token) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "User updated successfully.",userService.update(userDto));
-    }
-
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> delete(@PathVariable int id) {
-        userService.delete(id);
-        return new ApiResponse<>(HttpStatus.OK.value(), "User deleted successfully.", null);
     }
 
     @PostMapping(value = "/logout")

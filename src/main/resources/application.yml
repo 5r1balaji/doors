@@ -1,40 +1,33 @@
-spring :
-  profiles:
-    active: dev
-  application:
-    name: doors-api-gateway
-  #datasource:
-   # url: jdbc:mariadb://localhost:3306/doors
-   # username: root
-    #password: root
-    #driver-class-name: org.mariadb.jdbc.Driver
-  datasource:
-    url: jdbc:h2:mem:testdb
-    username:
-    password:
-    driver-class-name: org.h2.Driver
-  jpa:
-   # database-platform: org.hibernate.dialect.MariaDBDialect
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: update
-      generate-ddl: true
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  spring :
+    profiles:
+      active: dev
+    application:
+      name: doors-api-gateway1
 
-  redis:
+    redis:
       port: 6379
       password: password
-      host: redis-jwt-cluster.lrecma.0001.aps1.cache.amazonaws.com
+      host: localhost
       maxclients: 800
 
-server:
-  port: 5000
-  servlet:
-    context-path  : /doors-api
+  server:
+    port: 5003
+    servlet:
+      context-path  : /doors-api
 
-eureka:
-    client:
-      fetchRegistry: true
-      serviceUrl:
-        defaultZone: http://doorsserviceregistry-env.mqtbpp6jbb.ap-south-1.elasticbeanstalk.com/eureka/
+  eureka:
+      client:
+        fetchRegistry: true
+        serviceUrl:
+          defaultZone: http://localhost:8761/eureka/
+
+  zuul:
+    routes:
+        prefix: doors-api
+        usermanagement:
+           path: /users/**
+           serviceId: doors-usermanagement
+           stripPrefix: false
+  ribbon:
+    eureka:
+      enabled: true

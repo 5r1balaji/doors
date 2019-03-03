@@ -1,10 +1,8 @@
 package com.agam.doors.controller;
 
 import com.agam.doors.config.JwtTokenUtil;
-import com.agam.doors.model.ApiResponse;
-import com.agam.doors.model.AuthToken;
-import com.agam.doors.model.LoginUser;
-import com.agam.doors.model.User;
+import com.agam.doors.dao.UserDao;
+import com.agam.doors.model.*;
 import com.agam.doors.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -28,13 +26,14 @@ public class AuthenticationController {
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private UserService userService;
+    private UserDao userDao;
 
     @PostMapping(value = "/generate-token")
-    public ApiResponse<AuthToken> register(@RequestBody LoginUser loginUser) throws AuthenticationException {
+    public ApiResponse<AuthToken> register(@RequestBody LoginUser loginUser, @RequestHeader("X-TenantID")String  tenantId) throws AuthenticationException {
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword()));
-        final User user = userService.findOne(loginUser.getUsername());
+        final UserDto user = userDao.findByUsername(loginUser.getUsername(),tenantId);
+        System.out.println(user.toString());
         final AuthToken token = jwtTokenUtil.generateToken(user);
         return new ApiResponse<>(200, "success",token);
     }

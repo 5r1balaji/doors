@@ -1,7 +1,6 @@
 package com.agam.doors.service.impl;
 
 import com.agam.doors.dao.UserDao;
-import com.agam.doors.model.User;
 import com.agam.doors.model.UserDto;
 import com.agam.doors.service.UserService;
 import org.springframework.beans.BeanUtils;
@@ -13,6 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,8 +29,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	@Autowired
 	private BCryptPasswordEncoder bcryptEncoder;
 
+	@Autowired
+	private HttpServletRequest request;
+
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userDao.findByUsername(username);
+		System.out.println("hiii"+request.getHeader("X-TenantID"));
+		UserDto user = userDao.findByUsername(username,request.getHeader("X-TenantID"));
 		if(user == null){
 			throw new UsernameNotFoundException("Invalid username or password.");
 		}
@@ -40,46 +45,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 		return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
 	}
 
-	public List<User> findAll() {
-		List<User> list = new ArrayList<>();
-		userDao.findAll().iterator().forEachRemaining(list::add);
-		return list;
-	}
-
-	@Override
-	public void delete(int id) {
-		userDao.deleteById(id);
-	}
-
-	@Override
-	public User findOne(String username) {
-		return userDao.findByUsername(username);
-	}
-
-	@Override
-	public User findById(int id) {
-		Optional<User> optionalUser = userDao.findById(id);
-		return optionalUser.isPresent() ? optionalUser.get() : null;
-	}
 
     @Override
-    public UserDto update(UserDto userDto) {
-        User user = findById(userDto.getId());
-        if(user != null) {
-            BeanUtils.copyProperties(userDto, user, "password");
-            userDao.save(user);
-        }
-        return userDto;
-    }
-
-    @Override
-    public User save(UserDto user) {
-	    User newUser = new User();
-	    newUser.setUsername(user.getUsername());
-	    newUser.setFirstName(user.getFirstName());
-	    newUser.setLastName(user.getLastName());
-	    newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
-		newUser.setEmail(user.getEmail());
-        return userDao.save(newUser);
+    public UserDto save(UserDto user) {
+        return userDao.registerUser(user,request.getHeader("X-TenantID"));
     }
 }

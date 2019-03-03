@@ -1,7 +1,7 @@
 package com.agam.doors.config;
 
 import com.agam.doors.model.AuthToken;
-import com.agam.doors.model.User;
+import com.agam.doors.model.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -53,7 +53,7 @@ public class JwtTokenUtil implements Serializable {
         return expiration.before(new Date());
     }
 
-    public AuthToken generateToken(User user) {
+    public AuthToken generateToken(UserDto user) {
         return doGenerateToken(user.getUsername());
     }
 
